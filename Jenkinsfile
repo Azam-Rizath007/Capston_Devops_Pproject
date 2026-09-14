@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Docker Build') {
             steps {
-                checkout scm
+                sh 'docker build -t azamrizath/quickdrop:${BUILD_NUMBER} .'
             }
         }
     }
