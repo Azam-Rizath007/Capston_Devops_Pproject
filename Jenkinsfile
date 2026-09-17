@@ -26,21 +26,21 @@ pipeline {
         }
 
         stage('Deploy to App Server') {
-            steps {
-                sshagent(['app-server-ssh']) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@172.31.17.205 "
-                            sudo docker pull azamrizath/quickdrop:${BUILD_NUMBER} &&
-                            sudo docker rm -f quickdrop || true
-                            sudo docker run -d \
-                                --name quickdrop \
-                                --restart unless-stopped \
-                                -p 80:80 \
-                                azamrizath/quickdrop:${BUILD_NUMBER}
-                        "
-                    '''
-                }
-            }
+    steps {
+        sshagent(['app-server-ssh']) {
+            sh '''
+                ssh -o StrictHostKeyChecking=no ubuntu@172.31.17.205 "
+                    sudo docker pull azamrizath/quickdrop:${BUILD_NUMBER} &&
+                    (sudo docker rm -f quickdrop || true) &&
+                    sudo docker run -d \
+                        --name quickdrop \
+                        --restart unless-stopped \
+                        -p 80:80 \
+                        azamrizath/quickdrop:${BUILD_NUMBER}
+                "
+            '''
         }
+    }
+}
     }
 }
